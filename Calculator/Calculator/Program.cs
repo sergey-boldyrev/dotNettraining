@@ -48,7 +48,7 @@ namespace Calculator
                    rest = x / y;
                    break;
                default:
-                   Console.WriteLine("Invalid sign");
+                   Console.WriteLine("Invalid sign, please choose another one on next run");
                    break;
             }
             Console.WriteLine("Result: " + rest.ToString());
