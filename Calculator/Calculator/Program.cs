@@ -32,7 +32,7 @@ namespace Calculator
                     break;
             }*/
 
-//single line comment, I'll leave one more there
+//single line comment, I'll leave one more there and there
            switch (sign)
             {
                 case "+": 
