@@ -22,6 +22,7 @@ namespace Stack
             Console.WriteLine("stack length: " + arr_int.Count().ToString());
                 //[3].ToString());
             arr_int.Pop();
+            arr_int.Push(i);
             Console.WriteLine("stack length: " + arr_int.Count().ToString());
             Console.ReadLine();
 
@@ -43,7 +44,7 @@ namespace Stack
         {
             max = capacity;
             elements = new T[capacity];
-            cur = 0;
+            cur = -1;
         }
 
         public void Push(T element)
@@ -51,8 +52,9 @@ namespace Stack
             if (cur + 1 <= max)
             {
                 //elements[cur] = element;
-                elements.SetValue(element, cur); 
                 cur++;
+                elements.SetValue(element, cur); 
+                
             }
 
         }
