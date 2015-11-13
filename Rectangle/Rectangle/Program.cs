@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Rectangle
 {
@@ -13,14 +14,17 @@ namespace Rectangle
     {
         static void Main(string[] args)
         {
-            /*var objectGraph = new List<String> {
-"Jeff", "Kristin", "Aidan", "Grant" };
+            //var objectGraph = new List<String> {"Jeff", "Kristin", "Aidan", "Grant"};
+            var objectGraph = new MyRect(25.0, 10.0);
+            Double test_area = objectGraph.r_area;
             SerializeBinaryFormat(objectGraph, "serialized.dat");
             objectGraph = null;
             // Десериализация объектов и проверка их работоспособности
-            objectGraph = (List<String>)DeserializeBinaryFormat("serialized.dat");
-            foreach (var s in objectGraph)
-                Console.WriteLine(s);*/
+            objectGraph = (MyRect)DeserializeBinaryFormat("serialized.dat");
+            //foreach (var s in objectGraph)
+            Console.WriteLine(objectGraph.r_area.ToString());
+            Assert.AreEqual(test_area, objectGraph.r_area);
+            Console.ReadLine();
 
         }
         private static void SerializeBinaryFormat(Object objectGraph, string fileName)
@@ -53,7 +57,7 @@ namespace Rectangle
         private Double r_x;
         private Double r_y;
         [NonSerialized]
-        private Double r_area;
+        public Double r_area;
 
         public MyRect(Double x, Double y)
         {
