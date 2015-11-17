@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Formatters.Soap;
+using System.Xml.Serialization.XmlSerializer;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace BookCardIndex
 {
@@ -146,19 +149,56 @@ namespace BookCardIndex
             {
                 BinaryFormatter formatter = new BinaryFormatter();
                 formatter.Serialize(fStream, objectGraph);
+                Console.WriteLine("=> Saved book in binary format!");
             }
         }
         private static MyBook DeserializeBinaryFormat(string fileName)
         {
-            // Задание форматирования при сериализации
             BinaryFormatter formatter = new BinaryFormatter();
             using (Stream fStream = File.OpenRead(fileName))
             {
-                // Заставляем модуль форматирования десериализовать 
-                // объекты из потока ввода-вывода
                 return (MyBook)formatter.Deserialize(fStream);
             }
         }
+
+        private static void SerializeXMLFormat(Object objectGraph, string fileName)
+        {
+            XmlSerializer xmlFormat = new XmlSerializer(typeof(MyBook));
+            using (Stream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                xmlFormat.Serialize(fStream, objectGraph);
+                Console.WriteLine("=> Saved book in XML format!");
+            }
+
+        }
+        private static MyBook DeserializeXMLFormat(string fileName)
+        {
+            XmlSerializer xmlFormat = new XmlSerializer(typeof(MyBook));
+            using (Stream fStream = new FileStream(fileName,
+            FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                return (MyBook)xmlFormat.Deserialize(fStream);
+            }
+        }
+
+        private static void SerializeSOAPFormat(Object objectGraph, string fileName)
+        {
+            using (Stream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                SoapFormatter formatter = new SoapFormatter();
+                formatter.Serialize(fStream, objectGraph);
+                Console.WriteLine("=> Saved book in SOAP format!");
+            }
+        }
+        private static MyBook DeserializeSOAPFormat(string fileName)
+        {
+            SoapFormatter formatter = new SoapFormatter();
+            using (Stream fStream = File.OpenRead(fileName))
+            {
+                return (MyBook)formatter.Deserialize(fStream);
+            }
+        }
+
     }
 
     [Serializable]
@@ -180,7 +220,7 @@ namespace BookCardIndex
         public static bool VerifyName(string name)
         {
             //
-            if(name != "")
+            if (name != "" && name != " " && name.Trim() != "")
                 return true;
 
             return false;
@@ -189,7 +229,7 @@ namespace BookCardIndex
         public static bool VerifyAuthors(string authors)
         {
             //
-            if (authors != "")
+            if (authors != "" && authors != " " && authors.Trim() != "")
                 return true;
 
             return false;
@@ -197,7 +237,7 @@ namespace BookCardIndex
         public static bool VerifyYear(string year)
         {
             //
-            if (year != "")
+            if (year != "" && year != " " && year.Trim() != "")
                 return true;
 
             return false;
