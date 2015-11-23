@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<MyBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <name>test23</name>
+  <authors>
+    <string>test43</string>
+  </authors>
+  <published>1212</published>
+</MyBook>

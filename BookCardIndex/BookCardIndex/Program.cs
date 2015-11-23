@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Formatters.Soap;
-using System.Xml.Serialization.XmlSerializer;
+using System.Xml.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -13,6 +13,9 @@ namespace BookCardIndex
 {
     class Program
     {
+
+        enum Ser_type { BIN, SOAP, XML };
+        
         static void Main(string[] args)
         {
             #region App menu
@@ -24,7 +27,7 @@ namespace BookCardIndex
             int x = 0;
             String uri_path = @AppDomain.CurrentDomain.BaseDirectory; //System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             string localPath = new Uri(uri_path).LocalPath;
-            string[] presentBooks = Directory.GetFiles(localPath, "*.dat");
+            string[] presentBooks = Directory.GetFiles(localPath, "*.*").Where(s => s.EndsWith(".dat") || s.EndsWith(".xml") || s.EndsWith(".soap")).ToArray();
 
             if (Int32.TryParse(choice, out x))
             {
@@ -49,9 +52,36 @@ namespace BookCardIndex
                         MyBook new_one = AddBook();
                         DisplayBook(new_one);
 
-                        if (presentBooks.Contains(localPath + new_one.name + ".dat") != true)
+                        if (presentBooks.Contains(localPath + new_one.name) != true)
                         {
-                            SerializeBinaryFormat(new_one, new_one.name + ".dat");
+                            Console.WriteLine("Please enter type of serialization");
+                            foreach (Ser_type iType in Enum.GetValues(typeof(Ser_type)))
+                            {
+                                Console.WriteLine(iType.ToString());
+                            }
+                            string type = "";
+                            Ser_type test;
+                            do
+                            {
+                                type = Console.ReadLine();
+                            } while (!Enum.TryParse<Ser_type>(type, true, out test));
+
+
+                            switch (test)
+                            {
+                                case Ser_type.BIN:
+                                    Serialize(new_one, new_one.name + ".dat", Ser_type.BIN);
+                                    break;
+                                case Ser_type.SOAP:
+                                    Serialize(new_one, new_one.name + ".soap", Ser_type.SOAP);
+                                    break;
+                                case Ser_type.XML:
+                                    Serialize(new_one, new_one.name + ".xml", Ser_type.XML);
+                                    break;
+                                default:
+                                    Console.WriteLine("Wrong argument");
+                                    break;
+                            }
                         }
                         else
                         {
@@ -115,7 +145,7 @@ namespace BookCardIndex
         
         private static void DisplayBook(MyBook book)
         {
-            Console.WriteLine(book.name + ", " + book.published.ToString() + ".");
+            Console.WriteLine(book.name + ", " + book.published.ToString());
             Console.WriteLine(string.Join<string>(", ", book.authors));
         }
 
@@ -126,7 +156,18 @@ namespace BookCardIndex
           int j = 0;
           if (Int32.TryParse(id, out j) && j >= 0 && j <= Books_arr.Length)
           {
-              tmp_book = DeserializeBinaryFormat(Books_arr[j - 1]);
+                switch (Path.GetExtension(Books_arr[j - 1]))
+                {
+                    case ".dat":
+                        tmp_book = Deserialize(Books_arr[j - 1], Ser_type.BIN);
+                        break;
+                    case ".soap":
+                        tmp_book = Deserialize(Books_arr[j - 1], Ser_type.SOAP);
+                        break;
+                    case ".xml":
+                        tmp_book = Deserialize(Books_arr[j - 1], Ser_type.XML);
+                        break;
+                }
           }
           return tmp_book;
         }
@@ -137,21 +178,95 @@ namespace BookCardIndex
             int i = 1;
             foreach (string item in Books_arr)
             {
-                MyBook tmp_book = DeserializeBinaryFormat(item);
-                Console.WriteLine( i + " " + tmp_book.name + ".");
+                MyBook tmp_book = new MyBook();
+                switch (Path.GetExtension(item))
+                {
+                    case ".dat":
+                        tmp_book = Deserialize(item, Ser_type.BIN);
+                        break;
+                    case ".soap":
+                        tmp_book = Deserialize(item, Ser_type.SOAP);
+                        break;
+                    case ".xml":
+                        tmp_book = Deserialize(item, Ser_type.XML);
+                        break;
+                }
+                Console.WriteLine( i + " " + tmp_book.name);
                 i++;
             }        
         }
 
-        private static void SerializeBinaryFormat(Object objectGraph, string fileName)
+        private static void Serialize(Object objectGraph, string fileName, Ser_type type)
         {
             using (Stream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            { 
+                switch (type)
+                {
+                    case Ser_type.BIN:
+                        BinaryFormatter binformatter = new BinaryFormatter();
+                        binformatter.Serialize(fStream, objectGraph);
+                        Console.WriteLine("=> Saved book in binary format!");
+                        break;
+                    case Ser_type.SOAP:
+                        SoapFormatter soapformatter = new SoapFormatter();
+                        soapformatter.Serialize(fStream, objectGraph);
+                        Console.WriteLine("=> Saved book in SOAP format!");
+                        break;
+                    case Ser_type.XML:
+                        XmlSerializer xmlFormat = new XmlSerializer(typeof(MyBook));
+                        xmlFormat.Serialize(fStream, objectGraph);
+                        Console.WriteLine("=> Saved book in XML format!");
+                        break;
+                    default:
+                        BinaryFormatter defformatter = new BinaryFormatter();
+                        defformatter.Serialize(fStream, objectGraph);
+                        Console.WriteLine("=> Saved book in binary format!");
+                        break;
+                }
+            }
+            
+        }
+
+        private static MyBook Deserialize(string fileName, Ser_type type)
+        {
+            //using (Stream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (Stream fStream = File.OpenRead(fileName))
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                formatter.Serialize(fStream, objectGraph);
-                Console.WriteLine("=> Saved book in binary format!");
+                switch (type)
+                {
+                    case Ser_type.BIN:
+                        BinaryFormatter binformatter = new BinaryFormatter();
+                        return (MyBook)binformatter.Deserialize(fStream);
+                        //break;
+                    case Ser_type.SOAP:
+                        SoapFormatter soapformatter = new SoapFormatter();
+                        return (MyBook)soapformatter.Deserialize(fStream);
+                        //break;
+                    case Ser_type.XML:
+                        XmlSerializer xmlFormat = new XmlSerializer(typeof(MyBook));
+                        return (MyBook)xmlFormat.Deserialize(fStream);
+                        //break;
+                    default:
+                        Console.WriteLine("Wrong argument");
+                        return null;
+                        //break;*/
+                }
             }
         }
+
+        /*
+         * 
+        private static void SerializeBinaryFormat(Object objectGraph, string fileName, Ser_type type)
+        {
+            using (Stream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
+            { 
+                BinaryFormatter binformatter = new BinaryFormatter();
+                binformatter.Serialize(fStream, objectGraph);
+                Console.WriteLine("=> Saved book in binary format!");
+            }
+            
+        }
+         * 
         private static MyBook DeserializeBinaryFormat(string fileName)
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -159,8 +274,10 @@ namespace BookCardIndex
             {
                 return (MyBook)formatter.Deserialize(fStream);
             }
-        }
+        }*/
 
+
+        /*
         private static void SerializeXMLFormat(Object objectGraph, string fileName)
         {
             XmlSerializer xmlFormat = new XmlSerializer(typeof(MyBook));
@@ -197,17 +314,25 @@ namespace BookCardIndex
             {
                 return (MyBook)formatter.Deserialize(fStream);
             }
-        }
+        }*/
 
     }
 
     [Serializable]
 
-    class MyBook 
+    public class MyBook 
     {
         public string name;
         public List<string> authors;
         public int published;
+
+        public MyBook()
+        {
+            // TODO: Complete member initialization
+            this.name = default(string);
+            this.authors = default(List<string>);
+            this.published = default(int);
+        }
 
         public MyBook(string name, List<string> authors, int published)
         {

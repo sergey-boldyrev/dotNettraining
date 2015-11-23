@@ -1,0 +1,6 @@
+d:\Docs\GitHub\dotNettraining\BookCardIndex\BookCardIndex\bin\Debug\BookCardIndex.exe.config
+d:\Docs\GitHub\dotNettraining\BookCardIndex\BookCardIndex\bin\Debug\BookCardIndex.exe
+d:\Docs\GitHub\dotNettraining\BookCardIndex\BookCardIndex\bin\Debug\BookCardIndex.pdb
+d:\Docs\GitHub\dotNettraining\BookCardIndex\BookCardIndex\obj\Debug\BookCardIndex.csprojResolveAssemblyReference.cache
+d:\Docs\GitHub\dotNettraining\BookCardIndex\BookCardIndex\obj\Debug\BookCardIndex.exe
+d:\Docs\GitHub\dotNettraining\BookCardIndex\BookCardIndex\obj\Debug\BookCardIndex.pdb
