@@ -65,6 +65,7 @@ namespace Rectangle
             r_y = y;
             r_area = r_x * r_y;
         }
+
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
