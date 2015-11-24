@@ -210,7 +210,6 @@ namespace BookCardIndex
                 Console.WriteLine( i + " " + tmp_book.name);
                 i++;
             }
-            //return i;
         }
 
         private static void Serialize(Object objectGraph, string fileName, Ser_type type)
