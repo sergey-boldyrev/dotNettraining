@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<MyBook xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <name>testxml</name>
+  <authors>
+    <string>gogol</string>
+    <string>0</string>
+    <string>-465</string>
+    <string>+hjsdfksdfjsdfjksfdk</string>
+    <string>pipe</string>
+  </authors>
+  <published>-456</published>
+</MyBook>

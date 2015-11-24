@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+//using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Soap;
 using System.Xml.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
+//using System.Xml.Serialization;
 
 namespace BookCardIndex
 {
@@ -21,30 +21,44 @@ namespace BookCardIndex
             #region App menu
             Console.WriteLine("1. List all books");
             Console.WriteLine("2. Add new book");
+            Console.WriteLine("Enter index from menu above");
             //Console.WriteLine("3. List books");
             //Console.WriteLine("1. List books");
             string choice = Console.ReadLine();
-            int x = 0;
+            int choice_int = 0;
             String uri_path = @AppDomain.CurrentDomain.BaseDirectory; //System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             string localPath = new Uri(uri_path).LocalPath;
             string[] presentBooks = Directory.GetFiles(localPath, "*.*").Where(s => s.EndsWith(".dat") || s.EndsWith(".xml") || s.EndsWith(".soap")).ToArray();
 
-            if (Int32.TryParse(choice, out x))
+            if (Int32.TryParse(choice, out choice_int))
             {
-                switch (x)
+                switch (choice_int)
                 {
                     case 1:
-                        Console.WriteLine("List all books");
-                        ListAllBooks(presentBooks);
-                        string selection = Console.ReadLine();
-                        MyBook selected = SelectBook(selection, presentBooks);
-                        if (selected.name != "")
+                        if (presentBooks.Length > 0)
                         {
-                            DisplayBook(selected);
+                            Console.WriteLine("List all books");
+                            ListAllBooks(presentBooks);
+                            Console.WriteLine("Enter book index to view details");
+                            string selection = "";
+                            int y = 0;
+                            do
+                            {
+                                selection = Console.ReadLine();
+                            } while (!(Int32.TryParse(selection, out y) && y > 0 && y <= presentBooks.Length));
+                            MyBook selected = SelectBook(selection, presentBooks);
+                            if (selected.name != "")
+                            {
+                                DisplayBook(selected);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Wrong book index");
+                            }
                         }
-                        else
+                        else 
                         {
-                            Console.WriteLine("Wrong argument");
+                            Console.WriteLine("No books in library");
                         }
                         break;
                     case 2:
@@ -99,6 +113,7 @@ namespace BookCardIndex
             }
 
             #endregion
+            Console.WriteLine("Press enter to exit app");
             Console.ReadLine();
 
         }
@@ -120,11 +135,11 @@ namespace BookCardIndex
             } while (!MyBook.VerifyAuthors(authors_str));
 
             string[] authors_arr = authors_str.Split(',' , '|');
-            List<string> authors = new List<string>();
-            foreach (string item in authors_arr)
+            //List<string> authors = new List<string>();
+            /*foreach (string item in authors_arr)
             {
                 authors.Add(item);
-            }
+            }*/
 
             string x = "";
             do
@@ -139,7 +154,8 @@ namespace BookCardIndex
             {
                 published = y;
             }
-            MyBook temp = new MyBook(name, authors, published);
+            //MyBook temp = new MyBook(name, authors, published);
+            MyBook temp = new MyBook(name, authors_arr, published);
             return temp;
         }
         
@@ -193,7 +209,8 @@ namespace BookCardIndex
                 }
                 Console.WriteLine( i + " " + tmp_book.name);
                 i++;
-            }        
+            }
+            //return i;
         }
 
         private static void Serialize(Object objectGraph, string fileName, Ser_type type)
@@ -323,18 +340,21 @@ namespace BookCardIndex
     public class MyBook 
     {
         public string name;
-        public List<string> authors;
+        //public List<string> authors;
+        public string[] authors;
         public int published;
 
         public MyBook()
         {
             // TODO: Complete member initialization
             this.name = default(string);
-            this.authors = default(List<string>);
+            //this.authors = default(List<string>);
+            this.authors = default(string[]);
             this.published = default(int);
         }
 
-        public MyBook(string name, List<string> authors, int published)
+        //public MyBook(string name, List<string> authors, int published)
+        public MyBook(string name, string[] authors, int published)
         {
             // TODO: Complete member initialization
             this.name = name;
