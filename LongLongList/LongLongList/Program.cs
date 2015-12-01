@@ -101,6 +101,7 @@ namespace LongLongList
                         j++;
                     }
                 }
+                Console.WriteLine(j.ToString());
 
 
             }
