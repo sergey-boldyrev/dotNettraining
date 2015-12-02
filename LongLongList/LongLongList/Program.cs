@@ -10,8 +10,8 @@ namespace LongLongList
 {
     class Program
     {
-        static List<int> numbers = new List<int>(300);
-        static object locker = new object();
+        public static List<int> numbers = new List<int>(300);
+        public static object locker = new object();
 
         
         static void Main(string[] args)
@@ -26,14 +26,27 @@ namespace LongLongList
             Stopwatch stop = new Stopwatch();
             stop.Start();
 
-            Thread t = new Thread(CheckDivision);
-            t.Start();            
+            //Thread t = new Thread(CheckDivision);
+            //t.Start("test");
+
+            ThreadWithState tws1 = new ThreadWithState(0, 83, 1);
+            ThreadWithState tws2 = new ThreadWithState(84, 167, 2);
+            
+            
+            // Create a thread to execute the task, and then
+            // start the thread.
+            Thread t1 = new Thread(new ThreadStart(tws1.CheckDivision));
+            t1.Start();
+
+            Thread t2 = new Thread(new ThreadStart(tws2.CheckDivision));
+            t2.Start();
+
 
             for (int n = 2; n <= limit; n++)
             {
                 if (isPrime(n))
                 {
-                    Console.WriteLine("Число " + n.ToString() + " простое");
+                    //Console.WriteLine("Число " + n.ToString() + " простое");
                     Program.numbers.Add(n+3);
                     k++;
                 }
@@ -45,7 +58,9 @@ namespace LongLongList
 
             stop.Stop();
             TimeSpan time = stop.Elapsed;
-            t.Join();
+            //t.Join(20000);//костыль
+            t1.Join();
+            t2.Join();
             Console.WriteLine("Простых чисел в диапазоне от 1 до " + limit.ToString() + ": " + k.ToString());
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
                 time.Hours, time.Minutes, time.Seconds,
@@ -72,7 +87,7 @@ namespace LongLongList
         }
 
 
-        static bool div2(int n)
+        public static bool div2(int n)
         {
             bool div2 = false;
             if (n % 2 == 0)
@@ -82,26 +97,102 @@ namespace LongLongList
             return div2;
         }
 
-        static void CheckDivision() 
+        /*
+        static void CheckDivision(object id) 
         {
             Boolean lockTaken = false;
             object obj = (System.Object)locker;
-            int j = 0;
+            int j = 0;//счетчик срабатываний
+            int n = 0;//
+            int item = n;
+
+            Console.WriteLine(id.ToString());
+
+            
             try
             {
 
                 Monitor.Enter(obj, ref lockTaken);
 
                 //foreach (int item in numbers)
-                for (int item = 0; item < numbers.Count(); item++)
+                while (n <= numbers.Count())
                 {
-                    if (div2(numbers[item]))
+
+                    for (item = n; item < numbers.Count(); item++)
                     {
-                        Console.WriteLine(numbers[item].ToString());
-                        j++;
+                        if (div2(numbers[item]))
+                        {
+                            Console.WriteLine(numbers[item].ToString() + ", " + id);
+                            j++;
+                        }
                     }
+                    n = item;
+                    if (n == numbers.Count())
+                        break;
                 }
-                Console.WriteLine(j.ToString());
+                Console.WriteLine("Четных чисел в списке: " + j.ToString());
+
+
+            }
+            finally
+            {
+                if (lockTaken) Monitor.Exit(obj);
+            }
+
+        }*/
+
+
+
+    }
+
+    public class ThreadWithState
+    {
+        // State information used in the task.
+        private int start;
+        private int end;
+        private int id;
+
+        // The constructor obtains the state information.
+        public ThreadWithState(int start, int end, int id)
+        {
+            this.start = start;
+            this.end = end;
+            this.id = id;
+        }
+
+
+     public void CheckDivision()
+        {
+            Boolean lockTaken = false;
+            object obj = (System.Object)Program.locker;
+            int j = 0;//счетчик срабатываний
+            int n = 0;//
+            int item = n;
+
+            //Console.WriteLine(id.ToString());
+
+            
+            try
+            {
+                Monitor.Enter(obj, ref lockTaken);
+
+                //foreach (int item in numbers)
+                //while (end <= Program.numbers.Count() && start >= 0  && start < end)
+                //{
+
+                    for (item = start; item <= end; item++)
+                    {
+                        if (Program.div2(Program.numbers[item]))
+                        {
+                            Console.WriteLine(Program.numbers[item].ToString() + ", " + item + ", " + id);
+                            j++;
+                        }
+                    }
+                    //n = item;
+                    //if (n == Program.numbers.Count() || n == end)
+                    //    break;
+                //}
+                Console.WriteLine("Четных чисел в списке: " + j.ToString() + ", " + id);
 
 
             }
@@ -111,17 +202,5 @@ namespace LongLongList
             }
 
         }
-
-
-
-    }
-
-    [Serializable]
-    public class MyList
-    { 
-        
-
-
-    
     }
 }
