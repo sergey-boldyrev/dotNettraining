@@ -21,7 +21,7 @@ namespace LongLongList
             
             Console.WriteLine("Введите число\n");
             //int n = int.Parse(Console.ReadLine());
-            int limit = 1000;
+            int limit = 100000;
 
             Stopwatch stop = new Stopwatch();
             stop.Start();
@@ -29,32 +29,29 @@ namespace LongLongList
             //Thread t = new Thread(CheckDivision);
             //t.Start("test");
 
-            ThreadWithState tws1 = new ThreadWithState(0, 83, 1);
-            ThreadWithState tws2 = new ThreadWithState(84, 167, 2);
-            
-            
-            // Create a thread to execute the task, and then
-            // start the thread.
-            Thread t1 = new Thread(new ThreadStart(tws1.CheckDivision));
-            t1.Start();
-
-            Thread t2 = new Thread(new ThreadStart(tws2.CheckDivision));
-            t2.Start();
-
-
             for (int n = 2; n <= limit; n++)
             {
                 if (isPrime(n))
                 {
                     //Console.WriteLine("Число " + n.ToString() + " простое");
-                    Program.numbers.Add(n+3);
+                    Program.numbers.Add(n + 3);
                     k++;
+                    Console.WriteLine("Список готов на " + (n * 100 / limit).ToString() + "%");
                 }
                 /*else
                 {
                     Console.WriteLine("Число " + n.ToString() + " не простое");
                 }*/
             }
+
+            ThreadWithState tws1 = new ThreadWithState(0, numbers.Count() / 2, 1);
+            ThreadWithState tws2 = new ThreadWithState(numbers.Count() / 2 - 1, numbers.Count() - 1, 2);
+
+            Thread t1 = new Thread(new ThreadStart(tws1.CheckDivision));
+            t1.Start();
+
+            Thread t2 = new Thread(new ThreadStart(tws2.CheckDivision));
+            t2.Start();
 
             stop.Stop();
             TimeSpan time = stop.Elapsed;
@@ -163,7 +160,7 @@ namespace LongLongList
 
      public void CheckDivision()
         {
-            Boolean lockTaken = false;
+            //Boolean lockTaken = false;
             object obj = (System.Object)Program.locker;
             int j = 0;//счетчик срабатываний
             int n = 0;//
@@ -172,19 +169,19 @@ namespace LongLongList
             //Console.WriteLine(id.ToString());
 
             
-            try
+            /*try
             {
                 Monitor.Enter(obj, ref lockTaken);
 
                 //foreach (int item in numbers)
                 //while (end <= Program.numbers.Count() && start >= 0  && start < end)
-                //{
+                //{*/
 
                     for (item = start; item <= end; item++)
                     {
                         if (Program.div2(Program.numbers[item]))
                         {
-                            Console.WriteLine(Program.numbers[item].ToString() + ", " + item + ", " + id);
+                            Console.WriteLine("Значение: " + Program.numbers[item].ToString() + ", Номер: " + item + ", Поток: " + id);
                             j++;
                         }
                     }
@@ -195,11 +192,11 @@ namespace LongLongList
                 Console.WriteLine("Четных чисел в списке: " + j.ToString() + ", " + id);
 
 
-            }
+            /*}
             finally
             {
                 if (lockTaken) Monitor.Exit(obj);
-            }
+            }*/
 
         }
     }
