@@ -17,13 +17,24 @@ namespace LongLongList
         static void Main(string[] args)
         {
             //bool prost = true;
-            int k = 0;
-            
-            Console.WriteLine("Введите число\n");
-            //int n = int.Parse(Console.ReadLine());
-            int limit = 100000;
+            //int k = 0;
+            const int limit_max = 10000000;
+            const int threads_max = 100;
 
-            Random rnd = new Random();
+            int limit = 0;
+            string selection;
+
+            Console.WriteLine("Программа формирует список сумм простых чисел (из натурального ряда до {0}) и случайных значений \nи ищет в получившемся списке четные числа", limit_max);
+
+            do
+            {
+                Console.WriteLine("Введите предел для формирования списка простых чисел от 2 до {0}", limit_max);
+                selection = Console.ReadLine();
+                //} while (limit < 2 || limit > 10000000);
+
+            } while (!(Int32.TryParse(selection, out limit) && limit > 2 && limit <= limit_max));
+
+                Random rnd = new Random();
 
             //Thread t = new Thread(CheckDivision);
             //t.Start("test");
@@ -36,8 +47,9 @@ namespace LongLongList
                 {
                     //Console.WriteLine("Число " + n.ToString() + " простое");
                     Program.numbers.Add(n + rnd.Next(1, 11));
-                    k++;
-                    Console.WriteLine("Список готов на " + (n * 100 / limit).ToString() + "%");
+                    //k++;
+                    //Console.WriteLine("Список готов на " + (n * 100 / limit).ToString() + "%");
+                    Console.Write("\rСписок готов на {0}%   ", n * 100 / limit);
                 }
                 /*else
                 {
@@ -45,10 +57,16 @@ namespace LongLongList
                 }*/
             }
 
-            Console.WriteLine("Простых чисел в диапазоне от 1 до {0}: {1}", limit.ToString(), k.ToString());
+            Console.WriteLine("\nПростых чисел в диапазоне от 1 до {0}: {1}", limit.ToString(), numbers.Count());
+            int threads;
+            do
+            {
+                Console.WriteLine("Введите количество потоков для обработки списка от 1 до {0}", threads_max);
+                selection = Console.ReadLine();
+            } while (!(Int32.TryParse(selection, out threads) && threads > 0 && threads <= threads_max)) ;
 
-            Console.WriteLine("Введите количество потоков для обработки списка");
-            int threads = int.Parse(Console.ReadLine());
+            
+            //int threads = int.Parse(Console.ReadLine());
             int j = 1;
             int rangestart = 0;
             int rangeend = 0;
@@ -60,11 +78,14 @@ namespace LongLongList
             {
                 do
                 {
-                    Console.WriteLine("Введите конец диапазона для потока {0}. Начало диапазона: {1}, предел диапазона: {2}", j, rangestart, numbers.Count() - 1);
-                    rangeend = int.Parse(Console.ReadLine());
-                } while (rangeend <= rangestart && rangeend > numbers.Count() - 1);
-                
-                //ThreadWithState tws = new ThreadWithState(rangestart, rangeend, j);
+                    Console.WriteLine("Введите конец диапазона для потока {0} в пределах от {1} до {2}", j, rangestart + 1, numbers.Count());
+                    selection = Console.ReadLine();
+                    //} while (rangeend <= rangestart || rangeend > numbers.Count() - 1);
+
+                } while (!(Int32.TryParse(selection, out rangeend) && rangeend - 1> rangestart && rangeend -1 <= numbers.Count() - 1)) ;
+                rangeend -= 1;
+
+                    //ThreadWithState tws = new ThreadWithState(rangestart, rangeend, j);
                 Thread t = new Thread(new ThreadWithState(rangestart, rangeend, j).CheckDivision);
                 //t.Start();
                 listthreads.Add(t);
@@ -94,23 +115,24 @@ namespace LongLongList
             t2.Start();
             */
 
-            stop.Stop();
-            TimeSpan time = stop.Elapsed;
-            //t.Join(20000);//костыль
-
             foreach (Thread item in listthreads)
             {
                 item.Join();
             }
 
 
+            stop.Stop();
+            TimeSpan time = stop.Elapsed;
+            //t.Join(20000);//костыль
+
+
             //t1.Join();
             //t2.Join();
-            
+
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
                 time.Hours, time.Minutes, time.Seconds,
                 time.Milliseconds / 10);
-            Console.WriteLine("Время обработки: " + elapsedTime);
+            Console.WriteLine("Время обработки и вывода на экран: " + elapsedTime);
 
             Console.WriteLine("Нажмите любую клавишу для выхода из программы");
             Console.ReadKey();
