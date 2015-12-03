@@ -10,7 +10,7 @@ namespace LongLongList
 {
     class Program
     {
-        public static List<int> numbers = new List<int>(300);
+        public static List<int> numbers = new List<int>();
         public static object locker = new object();
 
         
@@ -23,18 +23,19 @@ namespace LongLongList
             //int n = int.Parse(Console.ReadLine());
             int limit = 100000;
 
-            Stopwatch stop = new Stopwatch();
-            stop.Start();
+            Random rnd = new Random();
 
             //Thread t = new Thread(CheckDivision);
             //t.Start("test");
 
+
+            //генерируем список простых чисел от 2 до limit
             for (int n = 2; n <= limit; n++)
             {
                 if (isPrime(n))
                 {
                     //Console.WriteLine("Число " + n.ToString() + " простое");
-                    Program.numbers.Add(n + 3);
+                    Program.numbers.Add(n + rnd.Next(1, 11));
                     k++;
                     Console.WriteLine("Список готов на " + (n * 100 / limit).ToString() + "%");
                 }
@@ -44,26 +45,74 @@ namespace LongLongList
                 }*/
             }
 
-            ThreadWithState tws1 = new ThreadWithState(0, numbers.Count() / 2, 1);
-            ThreadWithState tws2 = new ThreadWithState(numbers.Count() / 2 - 1, numbers.Count() - 1, 2);
+            Console.WriteLine("Простых чисел в диапазоне от 1 до {0}: {1}", limit.ToString(), k.ToString());
+
+            Console.WriteLine("Введите количество потоков для обработки списка");
+            int threads = int.Parse(Console.ReadLine());
+            int j = 1;
+            int rangestart = 0;
+            int rangeend = 0;
+
+            //List<ThreadWithState> liststates = new List<ThreadWithState>();
+            List<Thread> listthreads = new List<Thread>();
+
+            for (j = 1; j <= threads; j++)
+            {
+                do
+                {
+                    Console.WriteLine("Введите конец диапазона для потока {0}. Начало диапазона: {1}, предел диапазона: {2}", j, rangestart, numbers.Count() - 1);
+                    rangeend = int.Parse(Console.ReadLine());
+                } while (rangeend <= rangestart && rangeend > numbers.Count() - 1);
+                
+                //ThreadWithState tws = new ThreadWithState(rangestart, rangeend, j);
+                Thread t = new Thread(new ThreadWithState(rangestart, rangeend, j).CheckDivision);
+                //t.Start();
+                listthreads.Add(t);
+
+                rangestart = rangeend + 1;
+                //rangeend = (rangeend + 1) * 2 - 1;
+
+            }
+
+            Stopwatch stop = new Stopwatch();
+            stop.Start();
+
+            foreach (Thread item in listthreads)
+            {
+                item.Start();
+            }
+
+
+            /*
+            ThreadWithState tws1 = new ThreadWithState(0, numbers.Count() / 2 - 1, 2);
+            ThreadWithState tws2 = new ThreadWithState(numbers.Count() / 2, numbers.Count() - 1, 2);
 
             Thread t1 = new Thread(new ThreadStart(tws1.CheckDivision));
             t1.Start();
 
             Thread t2 = new Thread(new ThreadStart(tws2.CheckDivision));
             t2.Start();
+            */
 
             stop.Stop();
             TimeSpan time = stop.Elapsed;
             //t.Join(20000);//костыль
-            t1.Join();
-            t2.Join();
-            Console.WriteLine("Простых чисел в диапазоне от 1 до " + limit.ToString() + ": " + k.ToString());
+
+            foreach (Thread item in listthreads)
+            {
+                item.Join();
+            }
+
+
+            //t1.Join();
+            //t2.Join();
+            
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
                 time.Hours, time.Minutes, time.Seconds,
                 time.Milliseconds / 10);
-            Console.WriteLine("RunTime " + elapsedTime);
+            Console.WriteLine("Время обработки: " + elapsedTime);
 
+            Console.WriteLine("Нажмите любую клавишу для выхода из программы");
             Console.ReadKey();
 
         }
