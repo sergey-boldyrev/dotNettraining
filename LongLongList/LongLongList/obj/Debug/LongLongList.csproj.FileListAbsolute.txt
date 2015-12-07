@@ -1,6 +1,0 @@
-d:\Docs\GitHub\dotNettraining\LongLongList\LongLongList\bin\Debug\LongLongList.exe.config
-d:\Docs\GitHub\dotNettraining\LongLongList\LongLongList\bin\Debug\LongLongList.exe
-d:\Docs\GitHub\dotNettraining\LongLongList\LongLongList\bin\Debug\LongLongList.pdb
-d:\Docs\GitHub\dotNettraining\LongLongList\LongLongList\obj\Debug\LongLongList.csprojResolveAssemblyReference.cache
-d:\Docs\GitHub\dotNettraining\LongLongList\LongLongList\obj\Debug\LongLongList.exe
-d:\Docs\GitHub\dotNettraining\LongLongList\LongLongList\obj\Debug\LongLongList.pdb

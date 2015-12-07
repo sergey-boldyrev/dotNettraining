@@ -1,6 +1,0 @@
-d:\Docs\GitHub\dotNettraining\Stack\Stack\bin\Debug\Stack.exe.config
-d:\Docs\GitHub\dotNettraining\Stack\Stack\bin\Debug\Stack.exe
-d:\Docs\GitHub\dotNettraining\Stack\Stack\bin\Debug\Stack.pdb
-d:\Docs\GitHub\dotNettraining\Stack\Stack\obj\Debug\Stack.csprojResolveAssemblyReference.cache
-d:\Docs\GitHub\dotNettraining\Stack\Stack\obj\Debug\Stack.exe
-d:\Docs\GitHub\dotNettraining\Stack\Stack\obj\Debug\Stack.pdb

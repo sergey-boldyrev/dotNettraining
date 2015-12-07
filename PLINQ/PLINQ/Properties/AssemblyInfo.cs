@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Stack")]
+[assembly: AssemblyTitle("PLINQ")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Stack")]
+[assembly: AssemblyProduct("PLINQ")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("e4c853dd-64f5-4634-bdc1-69cdedc87460")]
+[assembly: Guid("9fb1af45-9bcd-48e6-85c5-7ea4311090c2")]
 
 // Version information for an assembly consists of the following four values:
 //
