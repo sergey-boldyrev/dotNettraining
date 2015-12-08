@@ -25,14 +25,14 @@ namespace BookCardIndex
             Console.WriteLine("1. List all books");
             Console.WriteLine("2. Add new book");
             Console.WriteLine("Enter index from menu above");
-            //Console.WriteLine("3. List books");
-            //Console.WriteLine("1. List books");
             string choice = Console.ReadLine();
             int choice_int = 0;
+            /*
             String uri_path = @AppDomain.CurrentDomain.BaseDirectory; //System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             string localPath = new Uri(uri_path).LocalPath;
             string[] presentBooks = Directory.GetFiles(localPath, "*.*").Where(s => s.EndsWith(".dat") || s.EndsWith(".xml") || s.EndsWith(".soap")).ToArray();
 
+             */ 
             string cnStr = ConfigurationManager.ConnectionStrings["my_db"].ConnectionString;
 
 
@@ -45,101 +45,103 @@ namespace BookCardIndex
                     string strSQL = "Select * From books";
                     SqlCommand myCommand = new SqlCommand(strSQL, cn);
                     SqlDataReader dr = myCommand.ExecuteReader();
-                    while (dr.Read())
+
+                    string strSQL1 = "SELECT COUNT(ID) FROM books";
+                    SqlCommand myCommand1 = new SqlCommand(strSQL1, cn);
+
+                    int num_books = (int)myCommand1.ExecuteScalar();
+
+                    if (Int32.TryParse(choice, out choice_int))
                     {
-                        Console.WriteLine("ID: {0} NAME: {1}", dr[0], dr[5]);
+                        switch (choice_int)
+                        {
+                            case 1:
+                                if (dr.HasRows)
+                                {
+                                    Console.WriteLine("List all books");
+                                    //ListAllBooks(presentBooks);
+                            
+                                    
+                                    //SqlCommand myCommand = new SqlCommand(strSQL, cn);
+                                    //SqlDataReader dr = myCommand.ExecuteReader();
+                                    while (dr.Read())
+                                    {
+                                        Console.WriteLine("ID: {0} NAME: {1}", dr[0], dr[5]);
+                                    }
+
+                                    Console.WriteLine("Enter book index to view details");
+                                    string selection = "";
+                                    int y = 0;
+                                    do
+                                    {
+                                        selection = Console.ReadLine();
+                                    } while (!(Int32.TryParse(selection, out y) && y > 0 && y <= num_books));
+                                    //MyBook selected = SelectBook(selection, presentBooks);
+
+                                    string strSQL2 = "SELECT * FROM books WHERE ID="+y;
+                                    SqlCommand myCommand2 = new SqlCommand(strSQL2, cn);
+                                    /*
+                                    if (selected.name != "")
+                                    {
+                                        DisplayBook(selected);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Wrong book index");
+                                    }*/
+                                }
+                                else
+                                {
+                                    Console.WriteLine("No books in library");
+                                }
+                                break;
+                            case 2:
+                                Console.WriteLine("Add new book");
+                                MyBook new_one = AddBook();
+                                //DisplayBook(new_one);
+                                string strSQL3 = string.Format("SELECT COUNT(NAME) FROM books WHERE NAME={0}", new_one.name);
+                                SqlCommand myCommand3 = new SqlCommand(strSQL3, cn);
+                                int book_present = (int)myCommand3.ExecuteScalar();
+
+                                if (book_present < 1)//(presentBooks.Contains(localPath + new_one.name) != true)
+                                {
+                                    string strSQL4 = string.Format("INSERT INTO books (NAME,AUTHOR1,AUTHOR2,AUTHOR3,PUBLISHED) VALUES ({0},{1},{2},{3},{4})", 
+                                        new_one.name, 
+                                        new_one.authors[0], 
+                                        new_one.authors[1], 
+                                        new_one.authors[2],
+                                        new_one.published);//INSERT INTO table_name (column1,column2,column3,...)
+                                    SqlCommand myCommand4 = new SqlCommand(strSQL4, cn);
+                                    int added = myCommand4.ExecuteNonQuery();
+                                    Console.WriteLine("New book has been added");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("This book is already present");
+                                }
+                                break;
+                            default:
+                                Console.WriteLine("Wrong argument");
+                                break;
+                        }
                     }
-                }
+                    else
+                    {
+                        Console.WriteLine("Wrong argument");
+                    }
+
+
+            }
                 catch (SqlException ex)
                 {
                     Console.WriteLine(ex);
                 }
-                finally
+
+            
+            finally
                 {
                     cn.Close();
                 }
-            }
-
-            if (Int32.TryParse(choice, out choice_int))
-            {
-                switch (choice_int)
-                {
-                    case 1:
-                        if (presentBooks.Length > 0)
-                        {
-                            Console.WriteLine("List all books");
-                            ListAllBooks(presentBooks);
-                            Console.WriteLine("Enter book index to view details");
-                            string selection = "";
-                            int y = 0;
-                            do
-                            {
-                                selection = Console.ReadLine();
-                            } while (!(Int32.TryParse(selection, out y) && y > 0 && y <= presentBooks.Length));
-                            MyBook selected = SelectBook(selection, presentBooks);
-                            if (selected.name != "")
-                            {
-                                DisplayBook(selected);
-                            }
-                            else
-                            {
-                                Console.WriteLine("Wrong book index");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("No books in library");
-                        }
-                        break;
-                    case 2:
-                        Console.WriteLine("Add new book");
-                        MyBook new_one = AddBook();
-                        DisplayBook(new_one);
-
-                        if (presentBooks.Contains(localPath + new_one.name) != true)
-                        {
-                            Console.WriteLine("Please enter type of serialization");
-                            foreach (Ser_type iType in Enum.GetValues(typeof(Ser_type)))
-                            {
-                                Console.WriteLine(iType.ToString());
-                            }
-                            string type = "";
-                            Ser_type test;
-                            do
-                            {
-                                type = Console.ReadLine();
-                            } while (!Enum.TryParse<Ser_type>(type, true, out test));
-
-
-                            switch (test)
-                            {
-                                case Ser_type.BIN:
-                                    Serialize(new_one, new_one.name + ".dat", Ser_type.BIN);
-                                    break;
-                                case Ser_type.SOAP:
-                                    Serialize(new_one, new_one.name + ".soap", Ser_type.SOAP);
-                                    break;
-                                case Ser_type.XML:
-                                    Serialize(new_one, new_one.name + ".xml", Ser_type.XML);
-                                    break;
-                                default:
-                                    Console.WriteLine("Wrong argument");
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("This book is already present");
-                        }
-                        break;
-                    default:
-                        Console.WriteLine("Wrong argument");
-                        break;
-                }
-            }
-            else
-            {
-                Console.WriteLine("Wrong argument");
             }
 
             #endregion
