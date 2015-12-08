@@ -7,6 +7,9 @@ using System.Runtime.Serialization.Formatters.Soap;
 using System.Xml.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 //using System.Xml.Serialization;
 
 namespace BookCardIndex
@@ -29,6 +32,33 @@ namespace BookCardIndex
             String uri_path = @AppDomain.CurrentDomain.BaseDirectory; //System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             string localPath = new Uri(uri_path).LocalPath;
             string[] presentBooks = Directory.GetFiles(localPath, "*.*").Where(s => s.EndsWith(".dat") || s.EndsWith(".xml") || s.EndsWith(".soap")).ToArray();
+
+            string cnStr = ConfigurationManager.ConnectionStrings["my_db"].ConnectionString;
+
+
+            using (SqlConnection cn = new SqlConnection())
+            {
+                cn.ConnectionString = cnStr;
+                try
+                {
+                    cn.Open();
+                    string strSQL = "Select * From books";
+                    SqlCommand myCommand = new SqlCommand(strSQL, cn);
+                    SqlDataReader dr = myCommand.ExecuteReader();
+                    while (dr.Read())
+                    {
+                        Console.WriteLine("ID: {0} NAME: {1}", dr[0], dr[5]);
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                finally
+                {
+                    cn.Close();
+                }
+            }
 
             if (Int32.TryParse(choice, out choice_int))
             {
@@ -270,69 +300,6 @@ namespace BookCardIndex
                 }
             }
         }
-
-        /*
-         * 
-        private static void SerializeBinaryFormat(Object objectGraph, string fileName, Ser_type type)
-        {
-            using (Stream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
-            { 
-                BinaryFormatter binformatter = new BinaryFormatter();
-                binformatter.Serialize(fStream, objectGraph);
-                Console.WriteLine("=> Saved book in binary format!");
-            }
-            
-        }
-         * 
-        private static MyBook DeserializeBinaryFormat(string fileName)
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            using (Stream fStream = File.OpenRead(fileName))
-            {
-                return (MyBook)formatter.Deserialize(fStream);
-            }
-        }*/
-
-
-        /*
-        private static void SerializeXMLFormat(Object objectGraph, string fileName)
-        {
-            XmlSerializer xmlFormat = new XmlSerializer(typeof(MyBook));
-            using (Stream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                xmlFormat.Serialize(fStream, objectGraph);
-                Console.WriteLine("=> Saved book in XML format!");
-            }
-
-        }
-        private static MyBook DeserializeXMLFormat(string fileName)
-        {
-            XmlSerializer xmlFormat = new XmlSerializer(typeof(MyBook));
-            using (Stream fStream = new FileStream(fileName,
-            FileMode.Open, FileAccess.Read, FileShare.None))
-            {
-                return (MyBook)xmlFormat.Deserialize(fStream);
-            }
-        }
-
-        private static void SerializeSOAPFormat(Object objectGraph, string fileName)
-        {
-            using (Stream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                SoapFormatter formatter = new SoapFormatter();
-                formatter.Serialize(fStream, objectGraph);
-                Console.WriteLine("=> Saved book in SOAP format!");
-            }
-        }
-        private static MyBook DeserializeSOAPFormat(string fileName)
-        {
-            SoapFormatter formatter = new SoapFormatter();
-            using (Stream fStream = File.OpenRead(fileName))
-            {
-                return (MyBook)formatter.Deserialize(fStream);
-            }
-        }*/
-
     }
 
     [Serializable]
