@@ -56,7 +56,7 @@ namespace BookCardIndex
                 }
                 finally
                 {
-                    cn.Close();
+                    cn.Close();//test
                 }
             }
 
