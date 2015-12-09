@@ -1,1 +1,6 @@
 d:\Docs\GitHub\dotNettraining\Reflection\Reflection\bin\Debug\Reflection.exe.config
+d:\Docs\GitHub\dotNettraining\Reflection\Reflection\bin\Debug\Reflection.exe
+d:\Docs\GitHub\dotNettraining\Reflection\Reflection\bin\Debug\Reflection.pdb
+d:\Docs\GitHub\dotNettraining\Reflection\Reflection\obj\Debug\Reflection.csprojResolveAssemblyReference.cache
+d:\Docs\GitHub\dotNettraining\Reflection\Reflection\obj\Debug\Reflection.exe
+d:\Docs\GitHub\dotNettraining\Reflection\Reflection\obj\Debug\Reflection.pdb

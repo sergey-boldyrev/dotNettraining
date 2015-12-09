@@ -1,6 +1,0 @@
-d:\Docs\GitHub\dotNettraining\Rectangle\Rectangle\bin\Debug\Rectangle.exe.config
-d:\Docs\GitHub\dotNettraining\Rectangle\Rectangle\obj\Debug\Rectangle.csprojResolveAssemblyReference.cache
-d:\Docs\GitHub\dotNettraining\Rectangle\Rectangle\bin\Debug\Rectangle.exe
-d:\Docs\GitHub\dotNettraining\Rectangle\Rectangle\bin\Debug\Rectangle.pdb
-d:\Docs\GitHub\dotNettraining\Rectangle\Rectangle\obj\Debug\Rectangle.exe
-d:\Docs\GitHub\dotNettraining\Rectangle\Rectangle\obj\Debug\Rectangle.pdb
