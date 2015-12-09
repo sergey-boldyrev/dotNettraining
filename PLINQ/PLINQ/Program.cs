@@ -7,6 +7,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Collections.Concurrent;
 
 namespace PLINQ
 {
@@ -19,7 +20,7 @@ namespace PLINQ
         {
             #region list creation
 
-            const int limit_max = 1000000;
+            const int limit_max = 10000000;
             const int threads_max = 10;
 
             int limit = limit_max;
@@ -35,14 +36,14 @@ namespace PLINQ
             String uri_path = @AppDomain.CurrentDomain.BaseDirectory; //System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             string localPath = new Uri(uri_path).LocalPath;
             string[] presentLists = Directory.GetFiles(localPath, "*.*").Where(s => s.EndsWith(".dat")).ToArray();
-
+            /*
             if (presentLists.Length > 0)
             {
                 numbers = DeserializeBinaryFormat(presentLists[0]);
                 Console.WriteLine("Список из {0} элементов успешно загружен. Для повторного формирования списка удалите файл default.dat из директории программы при следующем запуске", numbers.values.Count());
             }
-            else
-            {
+            else*/
+            //{
                 do
                 {
                     Console.WriteLine("Введите предел для формирования списка простых чисел от 2 до {0}", limit_max);
@@ -58,13 +59,13 @@ namespace PLINQ
                 {
                     if (isPrime(n))
                     {
-                        numbers.values.Add(n + rnd.Next(1, 11));
+                    numbers.values.TryAdd(n);// + rnd.Next(1, 11));
 
                     }
                     Console.Write("\rСписок готов на {0}%   ", n * 100 / limit);
                 }
                 stop1.Stop();
-                SerializeBinaryFormat(numbers, "default.dat");
+                //SerializeBinaryFormat(numbers, "default.dat");
                 Console.WriteLine("\nПростых чисел в диапазоне от 1 до {0}: {1}", limit.ToString(), numbers.values.Count());
                 
                 TimeSpan time1 = stop1.Elapsed;
@@ -72,32 +73,71 @@ namespace PLINQ
                     time1.Hours, time1.Minutes, time1.Seconds,
                     time1.Milliseconds / 10);
                 Console.WriteLine("Время подсчета в 1 поток: {0}", elapsedTime1);
-            }
+                Console.WriteLine("Нажмите любую клавишу для продолжения");
+            //}
 
             Console.ReadKey();
 
-            IEnumerable<int> nums = ParallelEnumerable.Range(2, limit);
+            IEnumerable<int> nums = ParallelEnumerable.Range(2, limit-2);
 
             //Stopwatch stop1 = new Stopwatch();
             stop2.Start();
 
-            nums.AsParallel().ForAll(c =>
+            nums.AsParallel().AsOrdered().ForAll(c =>
             {
                 if (isPrime(c))
                     {
-                        numbers1.values.Add(c + rnd.Next(1, 11));
+                        numbers1.values.TryAdd(c);// + rnd.Next(1, 11));
 
                     }
                     //Console.Write("\rСписок готов на {0}%   ", c * 100 / limit);
             });
             stop2.Stop();
-            SerializeBinaryFormat(numbers1, "default1.dat");
+            //SerializeBinaryFormat(numbers1, "default1.dat");
             Console.WriteLine("\nПростых чисел в диапазоне от 1 до {0}: {1}", limit.ToString(), numbers1.values.Count());
             TimeSpan time2 = stop2.Elapsed;
             string elapsedTime2 = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
                 time2.Hours, time2.Minutes, time2.Seconds,
                 time2.Milliseconds / 10);
                 Console.WriteLine("Время подсчета c PLINQ: {0}", elapsedTime2);
+            //numbers.values.OrderBy(c => c.)
+
+            /*
+            if (numbers1.values.Equals(numbers.values))
+                Console.WriteLine("коллекции numbers и numbers1 совпадают");
+                
+            int k = 0;
+            numbers.values.AsParallel().AsOrdered().ForAll(c =>
+            {
+                //Console.WriteLine(c);
+                if (c.Equals(numbers1.values.ElementAt(k)))
+                {
+                    //Console.WriteLine("Значение: " + c.ToString());// + ", Номер: " + item + ", Поток: " + id);
+                    //j++;
+                }
+                else
+                {
+                    Console.WriteLine("Значение не совпадает: " + c.ToString());// + ", Номер: " + item + ", Поток: " + id);
+                }
+                k++;
+            });*/
+
+            IEnumerable<int> onlyInFirstSet = numbers.values.Except(numbers1.values);
+
+
+            if (!onlyInFirstSet.Any())
+            {
+                Console.WriteLine("коллекции numbers и numbers1 совпадают");
+                //Console.WriteLine(onlyInFirstSet.Any());
+            }
+            else
+            {
+                Console.WriteLine("коллекции numbers и numbers1 НЕ совпадают");
+                Console.WriteLine(onlyInFirstSet.Any());
+                foreach (int item in onlyInFirstSet)
+                    Console.WriteLine("Значение numbers: " + item.ToString());
+            }
+                
 
             #endregion
 
@@ -168,7 +208,7 @@ namespace PLINQ
 
 
             stop3.Start();
-            numbers.values.AsParallel().ForAll(c =>
+            numbers.values.AsParallel().AsOrdered().ForAll(c =>
             {
                 //Console.WriteLine(c);
                 if (isPrime(c))
@@ -200,7 +240,7 @@ namespace PLINQ
         {
             bool prime = true;
 
-            for (int i = 2; i <= n / 2; i++)
+            for (int i = 2; (Double)i <= Math.Sqrt((Double)n); i++)
             {
                 if (n % i == 0)
                 {
@@ -222,7 +262,7 @@ namespace PLINQ
             return div2;
         }
 
-
+        /*
         private static void SerializeBinaryFormat(Object objectGraph, string fileName)
         {
             using (Stream fStream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -232,8 +272,9 @@ namespace PLINQ
                 Console.WriteLine("=> Список сохранен в двоичном формате");
             }
 
-        }
+        }*/
 
+        /*
         private static MyList DeserializeBinaryFormat(string fileName)
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -241,7 +282,7 @@ namespace PLINQ
             {
                 return (MyList)formatter.Deserialize(fStream);
             }
-        }
+        }*/
     }
 
     
@@ -273,9 +314,9 @@ namespace PLINQ
             for (item = start; item <= end; item++)
             {
                 //if (Program.div2(Program.numbers.values[item]))
-                if (Program.isPrime(Program.numbers.values[item]))
+                if (Program.isPrime(Program.numbers.values.ElementAt(item)))
                 {
-                    Console.WriteLine("Значение: " + Program.numbers.values[item].ToString() + ", Номер: " + item + ", Поток: " + id);
+                    Console.WriteLine("Значение: " + Program.numbers.values.ElementAt(item).ToString() + ", Номер: " + item + ", Поток: " + id);
                     j++;
                 }
             }
@@ -287,11 +328,12 @@ namespace PLINQ
 
     public class MyList
     {
-        public List<int> values;
+        //public List<int> values;
+        public BlockingCollection<int> values;
 
         public MyList()
         {
-            this.values = new List<int>();
+            this.values = new BlockingCollection<int>();
         }
     }
 
