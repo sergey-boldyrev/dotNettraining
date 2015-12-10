@@ -8,7 +8,7 @@ using System.Text;
 namespace BookCardIndexServiceLib
 {
     // ПРИМЕЧАНИЕ. Команду "Переименовать" в меню "Рефакторинг" можно использовать для одновременного изменения имени класса "Service1" в коде и файле конфигурации.
-    public class Service1 : BookCardIndexService
+    public class Service1 : IBookCardIndexService
     {
         public string GetData(int value)
         {

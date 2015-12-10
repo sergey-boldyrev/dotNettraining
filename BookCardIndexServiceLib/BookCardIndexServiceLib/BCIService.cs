@@ -6,66 +6,33 @@ using System.ServiceModel;
 using System.Text;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace BookCardIndexServiceLib
 {
     // ПРИМЕЧАНИЕ. Команду "Переименовать" в меню "Рефакторинг" можно использовать для одновременного изменения имени интерфейса "IService1" в коде и файле конфигурации.
     [ServiceContract]
-    public interface BookCardIndexService
+    public interface IBookCardIndexService
     {
         [OperationContract]
-        string GetData(int value);
+        MyBook GetBookByID(int ID);
 
         [OperationContract]
-        CompositeType GetDataUsingDataContract(CompositeType composite);
+        MyBook GetBookByName(string Name);
 
-        // TODO: Добавьте здесь операции служб
+        [OperationContract]
+        int GetBookCount();
+
+        [OperationContract]
+        List<string> GetBookList();
+
+        [OperationContract]
+        int StoreNewBook(MyBook new_one);
     }
 
     // Используйте контракт данных, как показано на следующем примере, чтобы добавить сложные типы к сервисным операциям.
     // В проект можно добавлять XSD-файлы. После построения проекта вы можете напрямую использовать в нем определенные типы данных с пространством имен "BookCardIndexServiceLib.ContractType".
-    [DataContract]
-    public class CompositeType
-    {
-        bool boolValue = true;
-        string stringValue = "Hello ";
 
-        [DataMember]
-        public bool BoolValue
-        {
-            get { return boolValue; }
-            set { boolValue = value; }
-        }
-
-        [DataMember]
-        public string StringValue
-        {
-            get { return stringValue; }
-            set { stringValue = value; }
-        }
-    }
-
-    [DataContract]
-    public class MySQLType
-    {
-        bool boolValue = true;
-        string stringValue = "Hello ";
-        //SQLDataReader dr = new SQLDataReader();
-
-        [DataMember]
-        public bool BoolValue
-        {
-            get { return boolValue; }
-            set { boolValue = value; }
-        }
-
-        [DataMember]
-        public string StringValue
-        {
-            get { return stringValue; }
-            set { stringValue = value; }
-        }
-    }
 
     [DataContract]
     public class MyBook
@@ -91,8 +58,22 @@ namespace BookCardIndexServiceLib
         [DataMember]
         public string Name
         {
-            get { return Name; }
-            set { Name = value; }
+            get { return name; }
+            set { name = value; }
+        }
+
+        [DataMember]
+        public string[] Authors
+        {
+            get { return authors; }
+            set { authors = value; }
+        }
+
+        [DataMember]
+        public int Published
+        {
+            get { return published; }
+            set { published = value; }
         }
 
         public static bool VerifyName(string name)
@@ -120,19 +101,213 @@ namespace BookCardIndexServiceLib
     }
 
 
-    public class MagicEightBallService : IEightBall
+    public class BookCardIndexService : IBookCardIndexService
+
     {
+        private string cnStr;
+
         // Для отображения на хосте.
-        public MagicEightBallService()
+        public BookCardIndexService()
         {
-            Console.WriteLine("The 8-Ball awaits your question...");
+            string cnStr = ConfigurationManager.ConnectionStrings["my_db"].ConnectionString;
+
+
+
+            Console.WriteLine("Service is ready...");
         }
-        public Answer ObtainAnswerToQuestion(string userQuestion)
+
+        public MyBook GetBookByID(int ID)
         {
-            Answer[] answers = { new Answer(false, "Future Uncertain"), new Answer(true, "Yes"), new Answer(false, "No"), new Answer(false, "Hazy"), new Answer(false, "Ask again later"), new Answer(true, "Definitely") };
-            // Вернуть случайный ответ.
-            Random r = new Random();
-            return answers[r.Next(answers.Length)];
+            //throw new NotImplementedException();
+            MyBook book = new MyBook();
+            using (SqlConnection cn = new SqlConnection())
+            {
+                cn.ConnectionString = this.cnStr;
+                try
+                {
+                    cn.Open();
+
+                    string strSQL = "SELECT * FROM books WHERE ID = " + ID;
+                    SqlCommand myCommand = new SqlCommand(strSQL, cn);
+                    SqlDataReader dr = myCommand.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                       // Console.WriteLine("ID: {0}, NAME: {1}, AUTHOR1: {2}, AUTHOR2: {3}, AUTHOR3: {4}, PUBLISHED: {5}", dr[0], dr[5], dr[1], dr[2], dr[3], dr[4]);
+                        book.name = (string)dr[5];
+                        book.authors = [(string)dr[1], (string)dr[2], (string)dr[3]];
+                        book.published = (int)dr[4];
+                    }
+                    dr.Close();
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                finally
+                {
+                    cn.Close();
+                }
+            }
+            return book;
+
+        }
+
+        public MyBook GetBookByName(string Name)
+        {
+            //throw new NotImplementedException();
+            MyBook book = new MyBook();
+            using (SqlConnection cn = new SqlConnection())
+            {
+                cn.ConnectionString = this.cnStr;
+                try
+                {
+                    cn.Open();
+                    string strSQL = "SELECT * FROM books WHERE Name = " + Name;
+                    SqlCommand myCommand = new SqlCommand(strSQL, cn);
+                    SqlDataReader dr = myCommand.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        // Console.WriteLine("ID: {0}, NAME: {1}, AUTHOR1: {2}, AUTHOR2: {3}, AUTHOR3: {4}, PUBLISHED: {5}", dr[0], dr[5], dr[1], dr[2], dr[3], dr[4]);
+                        book.name = (string)dr[5];
+                        book.authors = [(string)dr[1], (string)dr[2], (string)dr[3]];
+                        book.published = (int)dr[4];
+                    }
+                    dr.Close();
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                finally
+                {
+                    cn.Close();
+                }
+            }
+            return book;
+        }
+
+        public int GetBookCount()
+        {
+            //throw new NotImplementedException();
+            int num_books = -1;
+            using (SqlConnection cn = new SqlConnection())
+            {
+                cn.ConnectionString = this.cnStr;
+                try
+                {
+                    cn.Open();
+                    string strSQL = "SELECT COUNT(ID) FROM books";
+                    SqlCommand myCommand = new SqlCommand(strSQL, cn);
+                    num_books = (int)myCommand.ExecuteScalar();
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                finally
+                {
+                    cn.Close();
+                }
+            }
+            return num_books;
+        }
+
+        public List<string> GetBookList()
+        {
+            //throw new NotImplementedException();
+            List<string> list_books = new List<string>();
+            using (SqlConnection cn = new SqlConnection())
+            {
+
+                cn.ConnectionString = this.cnStr;
+                try
+                {
+                    cn.Open();
+                    string strSQL = "SELECT * FROM books";
+                    SqlCommand myCommand = new SqlCommand(strSQL, cn);
+                    //num_books = (int)myCommand1.ExecuteScalar
+
+                    SqlDataReader dr = myCommand.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        //Console.WriteLine("ID: {0} NAME: {1}", dr[0], dr[5]);
+                        list_books.Add(dr[5].ToString());
+                    }
+                    dr.Close();
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                finally
+                {
+                    cn.Close();
+                }
+            }
+            return list_books;
+        }
+
+        public int StoreNewBook(MyBook new_one)
+        {
+            // new NotImplementedException();
+            int num_books = -1;
+            using (SqlConnection cn = new SqlConnection())
+            {
+                cn.ConnectionString = this.cnStr;
+                try
+                {
+                    cn.Open();
+
+                    string strSQL = string.Format("SELECT * FROM books WHERE NAME = '{0}'", new_one.name);
+                    SqlCommand myCommand = new SqlCommand(strSQL, cn);
+                    SqlDataReader dr = myCommand.ExecuteReader();
+                    bool book_present = dr.HasRows;
+                    dr.Close();
+
+                    if (!book_present)//(presentBooks.Contains(localPath + new_one.name) != true)
+                    {
+                        string fields = "NAME, PUBLISHED";
+                        string values = "'{0}', {1}";
+
+                        for (int i = 1; i <= new_one.authors.Count(); i++)
+                        {
+                            fields += string.Format(", AUTHOR{0}", i);
+                            values += string.Format(", '{0}'", new_one.authors[i - 1]);
+                        }
+                        /*
+                        if (new_one.authors.Count() >= 2)
+                        {
+
+                        }*/
+
+                        string strSQL1 = string.Format("INSERT INTO books (" + fields + ") VALUES (" + values + ")",
+                            new_one.name,
+                            new_one.published);
+
+
+                        SqlCommand myCommand1 = new SqlCommand(strSQL1, cn);
+                        num_books = myCommand1.ExecuteNonQuery();
+                        //Console.WriteLine("New book has been added");
+                    }
+                    else
+                    {
+                        //Console.WriteLine("This book is already present");
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine(ex);
+                }
+                finally
+                {
+                    cn.Close();
+                }
+            }
+            return num_books;
+
         }
     }
 }
