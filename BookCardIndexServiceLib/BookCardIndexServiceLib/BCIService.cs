@@ -109,7 +109,7 @@ namespace BookCardIndexServiceLib
         // Для отображения на хосте.
         public BookCardIndexService()
         {
-            string cnStr = ConfigurationManager.ConnectionStrings["my_db"].ConnectionString;
+            cnStr = ConfigurationManager.ConnectionStrings["my_db"].ConnectionString;
 
 
 
@@ -120,6 +120,8 @@ namespace BookCardIndexServiceLib
         {
             //throw new NotImplementedException();
             MyBook book = new MyBook();
+            book.Authors = new string[3];
+            book.Authors.SetValue("", 0);
             using (SqlConnection cn = new SqlConnection())
             {
                 cn.ConnectionString = this.cnStr;
@@ -135,7 +137,13 @@ namespace BookCardIndexServiceLib
                     {
                        // Console.WriteLine("ID: {0}, NAME: {1}, AUTHOR1: {2}, AUTHOR2: {3}, AUTHOR3: {4}, PUBLISHED: {5}", dr[0], dr[5], dr[1], dr[2], dr[3], dr[4]);
                         book.name = (string)dr[5];
-                        book.authors = [(string)dr[1], (string)dr[2], (string)dr[3]];
+                        for (int j = 0; j <= 2; j++)
+                        {
+                            if (typeof(dr[j + 1]))
+                                book.authors.SetValue((string)dr[j + 1], j);
+
+                        }
+                            
                         book.published = (int)dr[4];
                     }
                     dr.Close();
@@ -163,7 +171,7 @@ namespace BookCardIndexServiceLib
                 try
                 {
                     cn.Open();
-                    string strSQL = "SELECT * FROM books WHERE Name = " + Name;
+                    string strSQL = string.Format("SELECT * FROM books WHERE NAME = '{0}'", Name);
                     SqlCommand myCommand = new SqlCommand(strSQL, cn);
                     SqlDataReader dr = myCommand.ExecuteReader();
 
@@ -171,7 +179,8 @@ namespace BookCardIndexServiceLib
                     {
                         // Console.WriteLine("ID: {0}, NAME: {1}, AUTHOR1: {2}, AUTHOR2: {3}, AUTHOR3: {4}, PUBLISHED: {5}", dr[0], dr[5], dr[1], dr[2], dr[3], dr[4]);
                         book.name = (string)dr[5];
-                        book.authors = [(string)dr[1], (string)dr[2], (string)dr[3]];
+                        for (int j = 0; j <= 2; j++)
+                            book.authors.SetValue((string)dr[j + 1], j);
                         book.published = (int)dr[4];
                     }
                     dr.Close();
