@@ -28,6 +28,15 @@ namespace BookCardIndexServiceLib
 
         [OperationContract]
         int StoreNewBook(MyBook new_one);
+
+        [OperationContract]
+        bool VerifyName(string name);
+
+        [OperationContract]
+        bool VerifyAuthors(string authors);
+
+        [OperationContract]
+        bool VerifyYear(string year);
     }
 
     // Используйте контракт данных, как показано на следующем примере, чтобы добавить сложные типы к сервисным операциям.
@@ -37,9 +46,9 @@ namespace BookCardIndexServiceLib
     [DataContract]
     public class MyBook
     {
-        public string name = default(string);
-        public string[] authors = default(string[]);
-        public int published = default(int);
+        private string name = default(string);
+        private string[] authors = default(string[]);
+        private int published = default(int);
 
         public MyBook()
         {
@@ -75,29 +84,6 @@ namespace BookCardIndexServiceLib
             get { return published; }
             set { published = value; }
         }
-
-        public static bool VerifyName(string name)
-        {
-            if (name != "" && name != " " && name.Trim() != "")
-                return true;
-
-            return false;
-        }
-
-        public static bool VerifyAuthors(string authors)
-        {
-            if (authors != "" && authors != " " && authors.Trim() != "")
-                return true;
-
-            return false;
-        }
-        public static bool VerifyYear(string year)
-        {
-            if (year != "" && year != " " && year.Trim() != "")
-                return true;
-
-            return false;
-        }
     }
 
 
@@ -110,8 +96,6 @@ namespace BookCardIndexServiceLib
         public BookCardIndexService()
         {
             cnStr = ConfigurationManager.ConnectionStrings["my_db"].ConnectionString;
-
-
 
             Console.WriteLine("Service is ready...");
         }
@@ -136,15 +120,15 @@ namespace BookCardIndexServiceLib
                     while (dr.Read())
                     {
                        // Console.WriteLine("ID: {0}, NAME: {1}, AUTHOR1: {2}, AUTHOR2: {3}, AUTHOR3: {4}, PUBLISHED: {5}", dr[0], dr[5], dr[1], dr[2], dr[3], dr[4]);
-                        book.name = (string)dr[5];
+                        book.Name = (string)dr[5];
                         for (int j = 0; j <= 2; j++)
                         {
                             if (dr[j + 1].GetType() != typeof(DBNull))
-                                book.authors.SetValue((string)dr[j + 1], j);
+                                book.Authors.SetValue((string)dr[j + 1], j);
 
                         }
                             
-                        book.published = (int)dr[4];
+                        book.Published = (int)dr[4];
                     }
                     dr.Close();
                 }
@@ -180,14 +164,14 @@ namespace BookCardIndexServiceLib
                     while (dr.Read())
                     {
                         // Console.WriteLine("ID: {0}, NAME: {1}, AUTHOR1: {2}, AUTHOR2: {3}, AUTHOR3: {4}, PUBLISHED: {5}", dr[0], dr[5], dr[1], dr[2], dr[3], dr[4]);
-                        book.name = (string)dr[5];
+                        book.Name = (string)dr[5];
                         for (int j = 0; j <= 2; j++)
                         {
                             if (dr[j + 1].GetType() != typeof(DBNull))
-                                book.authors.SetValue((string)dr[j + 1], j);
+                                book.Authors.SetValue((string)dr[j + 1], j);
                         }
                             
-                        book.published = (int)dr[4];
+                        book.Published = (int)dr[4];
                     }
                     dr.Close();
                 }
@@ -276,7 +260,7 @@ namespace BookCardIndexServiceLib
                 {
                     cn.Open();
 
-                    string strSQL = string.Format("SELECT * FROM books WHERE NAME = '{0}'", new_one.name);
+                    string strSQL = string.Format("SELECT * FROM books WHERE NAME = '{0}'", new_one.Name);
                     SqlCommand myCommand = new SqlCommand(strSQL, cn);
                     SqlDataReader dr = myCommand.ExecuteReader();
                     bool book_present = dr.HasRows;
@@ -287,10 +271,10 @@ namespace BookCardIndexServiceLib
                         string fields = "NAME, PUBLISHED";
                         string values = "'{0}', {1}";
 
-                        for (int i = 1; i <= new_one.authors.Count(); i++)
+                        for (int i = 1; i <= new_one.Authors.Count(); i++)
                         {
                             fields += string.Format(", AUTHOR{0}", i);
-                            values += string.Format(", '{0}'", new_one.authors[i - 1]);
+                            values += string.Format(", '{0}'", new_one.Authors[i - 1]);
                         }
                         /*
                         if (new_one.authors.Count() >= 2)
@@ -299,8 +283,8 @@ namespace BookCardIndexServiceLib
                         }*/
 
                         string strSQL1 = string.Format("INSERT INTO books (" + fields + ") VALUES (" + values + ")",
-                            new_one.name,
-                            new_one.published);
+                            new_one.Name,
+                            new_one.Published);
 
 
                         SqlCommand myCommand1 = new SqlCommand(strSQL1, cn);
@@ -323,6 +307,30 @@ namespace BookCardIndexServiceLib
             }
             return num_books;
 
+        }
+		
+		public bool VerifyName(string name)
+        {
+            if (name != "" && name != " " && name.Trim() != "")
+                return true;
+
+            return false;
+        }
+
+        public bool VerifyAuthors(string authors)
+        {
+            if (authors != "" && authors != " " && authors.Trim() != "")
+                return true;
+
+            return false;
+        }
+		
+        public bool VerifyYear(string year)
+        {
+            if (year != "" && year != " " && year.Trim() != "")
+                return true;
+
+            return false;
         }
     }
 }

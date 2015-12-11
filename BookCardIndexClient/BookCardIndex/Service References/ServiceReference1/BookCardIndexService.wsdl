@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="BookCardIndexService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="NetTcpBinding_IBookCardIndexService_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
+                </msf:WindowsTransportSecurity>
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict />
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:8090/BookCardIndexService?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:8090/BookCardIndexService?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:8090/BookCardIndexService?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/BookCardIndexServiceLib" />
+      <xsd:import schemaLocation="http://localhost:8090/BookCardIndexService?xsd=xsd3" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IBookCardIndexService_GetBookByID_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetBookByID" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_GetBookByID_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetBookByIDResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_GetBookByName_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetBookByName" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_GetBookByName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetBookByNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_GetBookCount_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetBookCount" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_GetBookCount_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetBookCountResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_GetBookList_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetBookList" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_GetBookList_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetBookListResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_StoreNewBook_InputMessage">
+    <wsdl:part name="parameters" element="tns:StoreNewBook" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_StoreNewBook_OutputMessage">
+    <wsdl:part name="parameters" element="tns:StoreNewBookResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_VerifyName_InputMessage">
+    <wsdl:part name="parameters" element="tns:VerifyName" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_VerifyName_OutputMessage">
+    <wsdl:part name="parameters" element="tns:VerifyNameResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_VerifyAuthors_InputMessage">
+    <wsdl:part name="parameters" element="tns:VerifyAuthors" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_VerifyAuthors_OutputMessage">
+    <wsdl:part name="parameters" element="tns:VerifyAuthorsResponse" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_VerifyYear_InputMessage">
+    <wsdl:part name="parameters" element="tns:VerifyYear" />
+  </wsdl:message>
+  <wsdl:message name="IBookCardIndexService_VerifyYear_OutputMessage">
+    <wsdl:part name="parameters" element="tns:VerifyYearResponse" />
+  </wsdl:message>
+  <wsdl:portType name="IBookCardIndexService">
+    <wsdl:operation name="GetBookByID">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBookCardIndexService/GetBookByID" message="tns:IBookCardIndexService_GetBookByID_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBookCardIndexService/GetBookByIDResponse" message="tns:IBookCardIndexService_GetBookByID_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBookByName">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBookCardIndexService/GetBookByName" message="tns:IBookCardIndexService_GetBookByName_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBookCardIndexService/GetBookByNameResponse" message="tns:IBookCardIndexService_GetBookByName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBookCount">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBookCardIndexService/GetBookCount" message="tns:IBookCardIndexService_GetBookCount_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBookCardIndexService/GetBookCountResponse" message="tns:IBookCardIndexService_GetBookCount_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBookList">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBookCardIndexService/GetBookList" message="tns:IBookCardIndexService_GetBookList_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBookCardIndexService/GetBookListResponse" message="tns:IBookCardIndexService_GetBookList_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="StoreNewBook">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBookCardIndexService/StoreNewBook" message="tns:IBookCardIndexService_StoreNewBook_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBookCardIndexService/StoreNewBookResponse" message="tns:IBookCardIndexService_StoreNewBook_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="VerifyName">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBookCardIndexService/VerifyName" message="tns:IBookCardIndexService_VerifyName_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBookCardIndexService/VerifyNameResponse" message="tns:IBookCardIndexService_VerifyName_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="VerifyAuthors">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBookCardIndexService/VerifyAuthors" message="tns:IBookCardIndexService_VerifyAuthors_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBookCardIndexService/VerifyAuthorsResponse" message="tns:IBookCardIndexService_VerifyAuthors_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="VerifyYear">
+      <wsdl:input wsaw:Action="http://tempuri.org/IBookCardIndexService/VerifyYear" message="tns:IBookCardIndexService_VerifyYear_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IBookCardIndexService/VerifyYearResponse" message="tns:IBookCardIndexService_VerifyYear_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_IBookCardIndexService" type="tns:IBookCardIndexService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetBookByID">
+      <soap:operation soapAction="http://tempuri.org/IBookCardIndexService/GetBookByID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBookByName">
+      <soap:operation soapAction="http://tempuri.org/IBookCardIndexService/GetBookByName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBookCount">
+      <soap:operation soapAction="http://tempuri.org/IBookCardIndexService/GetBookCount" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBookList">
+      <soap:operation soapAction="http://tempuri.org/IBookCardIndexService/GetBookList" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StoreNewBook">
+      <soap:operation soapAction="http://tempuri.org/IBookCardIndexService/StoreNewBook" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VerifyName">
+      <soap:operation soapAction="http://tempuri.org/IBookCardIndexService/VerifyName" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VerifyAuthors">
+      <soap:operation soapAction="http://tempuri.org/IBookCardIndexService/VerifyAuthors" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VerifyYear">
+      <soap:operation soapAction="http://tempuri.org/IBookCardIndexService/VerifyYear" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="NetTcpBinding_IBookCardIndexService" type="tns:IBookCardIndexService">
+    <wsp:PolicyReference URI="#NetTcpBinding_IBookCardIndexService_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="GetBookByID">
+      <soap12:operation soapAction="http://tempuri.org/IBookCardIndexService/GetBookByID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBookByName">
+      <soap12:operation soapAction="http://tempuri.org/IBookCardIndexService/GetBookByName" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBookCount">
+      <soap12:operation soapAction="http://tempuri.org/IBookCardIndexService/GetBookCount" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBookList">
+      <soap12:operation soapAction="http://tempuri.org/IBookCardIndexService/GetBookList" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="StoreNewBook">
+      <soap12:operation soapAction="http://tempuri.org/IBookCardIndexService/StoreNewBook" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VerifyName">
+      <soap12:operation soapAction="http://tempuri.org/IBookCardIndexService/VerifyName" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VerifyAuthors">
+      <soap12:operation soapAction="http://tempuri.org/IBookCardIndexService/VerifyAuthors" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VerifyYear">
+      <soap12:operation soapAction="http://tempuri.org/IBookCardIndexService/VerifyYear" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="BookCardIndexService">
+    <wsdl:port name="BasicHttpBinding_IBookCardIndexService" binding="tns:BasicHttpBinding_IBookCardIndexService">
+      <soap:address location="http://localhost:8090/BookCardIndexService" />
+    </wsdl:port>
+    <wsdl:port name="NetTcpBinding_IBookCardIndexService" binding="tns:NetTcpBinding_IBookCardIndexService">
+      <soap12:address location="net.tcp://localhost:8091/BookCardIndexService" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost:8091/BookCardIndexService</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Dns>localhost</Dns>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
