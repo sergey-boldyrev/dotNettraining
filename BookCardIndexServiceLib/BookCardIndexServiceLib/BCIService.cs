@@ -139,7 +139,7 @@ namespace BookCardIndexServiceLib
                         book.name = (string)dr[5];
                         for (int j = 0; j <= 2; j++)
                         {
-                            if (typeof(dr[j + 1]))
+                            if (dr[j + 1].GetType() != typeof(DBNull))
                                 book.authors.SetValue((string)dr[j + 1], j);
 
                         }
@@ -165,6 +165,8 @@ namespace BookCardIndexServiceLib
         {
             //throw new NotImplementedException();
             MyBook book = new MyBook();
+            book.Authors = new string[3];
+            book.Authors.SetValue("", 0);
             using (SqlConnection cn = new SqlConnection())
             {
                 cn.ConnectionString = this.cnStr;
@@ -180,7 +182,11 @@ namespace BookCardIndexServiceLib
                         // Console.WriteLine("ID: {0}, NAME: {1}, AUTHOR1: {2}, AUTHOR2: {3}, AUTHOR3: {4}, PUBLISHED: {5}", dr[0], dr[5], dr[1], dr[2], dr[3], dr[4]);
                         book.name = (string)dr[5];
                         for (int j = 0; j <= 2; j++)
-                            book.authors.SetValue((string)dr[j + 1], j);
+                        {
+                            if (dr[j + 1].GetType() != typeof(DBNull))
+                                book.authors.SetValue((string)dr[j + 1], j);
+                        }
+                            
                         book.published = (int)dr[4];
                     }
                     dr.Close();
