@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="1cef4c9c-fec8-42b9-824a-a3bb3a49294e" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8090/BookCardIndexService" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="BookCardIndexService.xsd" MetadataType="Schema" ID="deb1f7ba-75db-43de-8082-909d8188128e" SourceId="1" SourceUrl="http://localhost:8090/BookCardIndexService?xsd=xsd2" />
+    <MetadataFile FileName="BookCardIndexService.disco" MetadataType="Disco" ID="a8ecf358-0e68-40d1-aa69-2750ab9c8c58" SourceId="1" SourceUrl="http://localhost:8090/BookCardIndexService?disco" />
+    <MetadataFile FileName="BookCardIndexService.wsdl" MetadataType="Wsdl" ID="e4d52907-74e0-4e18-8595-89436e22fc7f" SourceId="1" SourceUrl="http://localhost:8090/BookCardIndexService?wsdl" />
+    <MetadataFile FileName="BookCardIndexService1.xsd" MetadataType="Schema" ID="a19c11c6-4ee8-49c2-8e15-570b2415ee20" SourceId="1" SourceUrl="http://localhost:8090/BookCardIndexService?xsd=xsd1" />
+    <MetadataFile FileName="BookCardIndexService2.xsd" MetadataType="Schema" ID="854e2e9c-0966-4bf2-85aa-5e03dc7d13ad" SourceId="1" SourceUrl="http://localhost:8090/BookCardIndexService?xsd=xsd0" />
+    <MetadataFile FileName="BookCardIndexService3.xsd" MetadataType="Schema" ID="27fb22df-5384-4ccb-aa2e-2e5e3247f4ab" SourceId="1" SourceUrl="http://localhost:8090/BookCardIndexService?xsd=xsd3" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

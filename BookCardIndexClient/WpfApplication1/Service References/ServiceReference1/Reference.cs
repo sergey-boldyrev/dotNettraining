@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace BookCardIndex.ServiceReference1 {
+namespace WpfApplication1.ServiceReference1 {
     using System.Runtime.Serialization;
     using System;
     
@@ -26,11 +26,24 @@ namespace BookCardIndex.ServiceReference1 {
         private string[] AuthorsField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string NameField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private int PublishedField;
-        
+        //private string[] authors_arr;
+        //private int published_int;
+
+        public MyBook(string name, string[] authors_arr, int published_int, int id)
+        {
+            Name = name;
+            Authors = authors_arr;
+            Published = published_int;
+            Id = id;
+        }
+
         [global::System.ComponentModel.BrowsableAttribute(false)]
         public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
             get {
@@ -50,6 +63,19 @@ namespace BookCardIndex.ServiceReference1 {
                 if ((object.ReferenceEquals(this.AuthorsField, value) != true)) {
                     this.AuthorsField = value;
                     this.RaisePropertyChanged("Authors");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
                 }
             }
         }
@@ -95,16 +121,16 @@ namespace BookCardIndex.ServiceReference1 {
     public interface IBookCardIndexService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBookCardIndexService/GetBookByID", ReplyAction="http://tempuri.org/IBookCardIndexService/GetBookByIDResponse")]
-        BookCardIndex.ServiceReference1.MyBook GetBookByID(int ID);
+        WpfApplication1.ServiceReference1.MyBook GetBookByID(int ID);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBookCardIndexService/GetBookByID", ReplyAction="http://tempuri.org/IBookCardIndexService/GetBookByIDResponse")]
-        System.Threading.Tasks.Task<BookCardIndex.ServiceReference1.MyBook> GetBookByIDAsync(int ID);
+        System.Threading.Tasks.Task<WpfApplication1.ServiceReference1.MyBook> GetBookByIDAsync(int ID);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBookCardIndexService/GetBookByName", ReplyAction="http://tempuri.org/IBookCardIndexService/GetBookByNameResponse")]
-        BookCardIndex.ServiceReference1.MyBook GetBookByName(string Name);
+        WpfApplication1.ServiceReference1.MyBook GetBookByName(string Name);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBookCardIndexService/GetBookByName", ReplyAction="http://tempuri.org/IBookCardIndexService/GetBookByNameResponse")]
-        System.Threading.Tasks.Task<BookCardIndex.ServiceReference1.MyBook> GetBookByNameAsync(string Name);
+        System.Threading.Tasks.Task<WpfApplication1.ServiceReference1.MyBook> GetBookByNameAsync(string Name);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBookCardIndexService/GetBookCount", ReplyAction="http://tempuri.org/IBookCardIndexService/GetBookCountResponse")]
         int GetBookCount();
@@ -113,16 +139,16 @@ namespace BookCardIndex.ServiceReference1 {
         System.Threading.Tasks.Task<int> GetBookCountAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBookCardIndexService/GetBookList", ReplyAction="http://tempuri.org/IBookCardIndexService/GetBookListResponse")]
-        string[] GetBookList();
+        WpfApplication1.ServiceReference1.MyBook[] GetBookList();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBookCardIndexService/GetBookList", ReplyAction="http://tempuri.org/IBookCardIndexService/GetBookListResponse")]
-        System.Threading.Tasks.Task<string[]> GetBookListAsync();
+        System.Threading.Tasks.Task<WpfApplication1.ServiceReference1.MyBook[]> GetBookListAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBookCardIndexService/StoreNewBook", ReplyAction="http://tempuri.org/IBookCardIndexService/StoreNewBookResponse")]
-        int StoreNewBook(BookCardIndex.ServiceReference1.MyBook new_one);
+        int StoreNewBook(WpfApplication1.ServiceReference1.MyBook new_one);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBookCardIndexService/StoreNewBook", ReplyAction="http://tempuri.org/IBookCardIndexService/StoreNewBookResponse")]
-        System.Threading.Tasks.Task<int> StoreNewBookAsync(BookCardIndex.ServiceReference1.MyBook new_one);
+        System.Threading.Tasks.Task<int> StoreNewBookAsync(WpfApplication1.ServiceReference1.MyBook new_one);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IBookCardIndexService/VerifyName", ReplyAction="http://tempuri.org/IBookCardIndexService/VerifyNameResponse")]
         bool VerifyName(string name);
@@ -144,12 +170,12 @@ namespace BookCardIndex.ServiceReference1 {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IBookCardIndexServiceChannel : BookCardIndex.ServiceReference1.IBookCardIndexService, System.ServiceModel.IClientChannel {
+    public interface IBookCardIndexServiceChannel : WpfApplication1.ServiceReference1.IBookCardIndexService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class BookCardIndexServiceClient : System.ServiceModel.ClientBase<BookCardIndex.ServiceReference1.IBookCardIndexService>, BookCardIndex.ServiceReference1.IBookCardIndexService {
+    public partial class BookCardIndexServiceClient : System.ServiceModel.ClientBase<WpfApplication1.ServiceReference1.IBookCardIndexService>, WpfApplication1.ServiceReference1.IBookCardIndexService {
         
         public BookCardIndexServiceClient() {
         }
@@ -170,19 +196,19 @@ namespace BookCardIndex.ServiceReference1 {
                 base(binding, remoteAddress) {
         }
         
-        public BookCardIndex.ServiceReference1.MyBook GetBookByID(int ID) {
+        public WpfApplication1.ServiceReference1.MyBook GetBookByID(int ID) {
             return base.Channel.GetBookByID(ID);
         }
         
-        public System.Threading.Tasks.Task<BookCardIndex.ServiceReference1.MyBook> GetBookByIDAsync(int ID) {
+        public System.Threading.Tasks.Task<WpfApplication1.ServiceReference1.MyBook> GetBookByIDAsync(int ID) {
             return base.Channel.GetBookByIDAsync(ID);
         }
         
-        public BookCardIndex.ServiceReference1.MyBook GetBookByName(string Name) {
+        public WpfApplication1.ServiceReference1.MyBook GetBookByName(string Name) {
             return base.Channel.GetBookByName(Name);
         }
         
-        public System.Threading.Tasks.Task<BookCardIndex.ServiceReference1.MyBook> GetBookByNameAsync(string Name) {
+        public System.Threading.Tasks.Task<WpfApplication1.ServiceReference1.MyBook> GetBookByNameAsync(string Name) {
             return base.Channel.GetBookByNameAsync(Name);
         }
         
@@ -194,19 +220,19 @@ namespace BookCardIndex.ServiceReference1 {
             return base.Channel.GetBookCountAsync();
         }
         
-        public string[] GetBookList() {
+        public WpfApplication1.ServiceReference1.MyBook[] GetBookList() {
             return base.Channel.GetBookList();
         }
         
-        public System.Threading.Tasks.Task<string[]> GetBookListAsync() {
+        public System.Threading.Tasks.Task<WpfApplication1.ServiceReference1.MyBook[]> GetBookListAsync() {
             return base.Channel.GetBookListAsync();
         }
         
-        public int StoreNewBook(BookCardIndex.ServiceReference1.MyBook new_one) {
+        public int StoreNewBook(WpfApplication1.ServiceReference1.MyBook new_one) {
             return base.Channel.StoreNewBook(new_one);
         }
         
-        public System.Threading.Tasks.Task<int> StoreNewBookAsync(BookCardIndex.ServiceReference1.MyBook new_one) {
+        public System.Threading.Tasks.Task<int> StoreNewBookAsync(WpfApplication1.ServiceReference1.MyBook new_one) {
             return base.Channel.StoreNewBookAsync(new_one);
         }
         

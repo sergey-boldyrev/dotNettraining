@@ -24,7 +24,7 @@ namespace BookCardIndexServiceLib
         int GetBookCount();
 
         [OperationContract]
-        List<string> GetBookList();
+        MyBook[] GetBookList();
 
         [OperationContract]
         int StoreNewBook(MyBook new_one);
@@ -49,19 +49,22 @@ namespace BookCardIndexServiceLib
         private string name = default(string);
         private string[] authors = default(string[]);
         private int published = default(int);
+        private int id = default(int);
 
         public MyBook()
         {
             this.name = default(string);
             this.authors = default(string[]);
             this.published = default(int);
+            this.id = default(int);
         }
 
-        public MyBook(string name, string[] authors, int published)
+        public MyBook(string name, string[] authors, int published, int id)
         {
             this.name = name;
             this.authors = authors;
             this.published = published;
+            this.id = id;
         }
 
         [DataMember]
@@ -83,6 +86,13 @@ namespace BookCardIndexServiceLib
         {
             get { return published; }
             set { published = value; }
+        }
+
+        [DataMember]
+        public int Id
+        {
+            get { return id; }
+            set { id = value; }
         }
     }
 
@@ -213,10 +223,10 @@ namespace BookCardIndexServiceLib
             return num_books;
         }
 
-        public List<string> GetBookList()
+        public MyBook[] GetBookList()
         {
             //throw new NotImplementedException();
-            List<string> list_books = new List<string>();
+            MyBook[] list_books = new MyBook[GetBookCount()];
             using (SqlConnection cn = new SqlConnection())
             {
 
@@ -224,18 +234,31 @@ namespace BookCardIndexServiceLib
                 try
                 {
                     cn.Open();
+                    //MyBook[] list_books = new MyBook[];
                     string strSQL = "SELECT * FROM books";
                     SqlCommand myCommand = new SqlCommand(strSQL, cn);
                     //num_books = (int)myCommand1.ExecuteScalar
 
                     SqlDataReader dr = myCommand.ExecuteReader();
-
+                    int j = 0;
                     while (dr.Read())
                     {
                         //Console.WriteLine("ID: {0} NAME: {1}", dr[0], dr[5]);
-                        list_books.Add(dr[5].ToString());
+                        //list_books.Add(dr[5].ToString()); if (dr[j + 1].GetType() != typeof(DBNull))
+                        list_books.SetValue(new MyBook(
+                            (string)dr[5], 
+                            new string[] 
+                            {
+                                (string)dr[1],
+                                dr[2].GetType() != typeof(DBNull) ? (string)dr[2] : "",
+                                dr[3].GetType() != typeof(DBNull) ? (string)dr[3] : ""
+                            }, 
+                            (int)dr[4], 
+                            (int)dr[0]),j);
+                        j++;
                     }
                     dr.Close();
+                    //return list_books;
                 }
                 catch (SqlException ex)
                 {
